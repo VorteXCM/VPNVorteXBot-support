@@ -443,19 +443,6 @@
             <main id="app-container" class="flex-grow overflow-y-auto">
                 <!-- Tickets List View -->
                 <div id="tickets-list-view" class="p-4">
-                    <div id="tg-profile-card" class="fade-in-item mb-3 hidden">
-                        <div id="tg-profile-main">
-                            <div id="tg-profile-avatar"><span id="tg-profile-initials">TG</span></div>
-                            <div id="tg-profile-texts">
-                                <span id="tg-profile-name">کاربر تلگرام</span>
-                                <span id="tg-profile-username">@username</span>
-                            </div>
-                        </div>
-                        <div id="tg-profile-pill">
-                            <span id="tg-profile-pill-dot"></span>
-                            <span id="tg-profile-pill-text">متصل به تلگرام</span>
-                        </div>
-                    </div>
                     <div id="smart-card" class="p-4 rounded-lg shadow-lg mb-4 fade-in-item" style="background: linear-gradient(135deg, #3D5A80 0%, #274059 100%);">
                         <h3 id="smart-card-greeting" class="text-lg font-bold text-white mb-3">سلام کاربر عزیز! 👋</h3>
                         <p id="smart-card-tip" class="text-sm mb-4 p-3 rounded-lg" style="background-color: rgba(0,0,0,0.2);"><span class="text-xl">💡</span> <span class="font-bold">نکته:</span> برای دریافت پاسخ سریع‌تر، مشکل خود را با جزئیات کامل شرح دهید.</p>
@@ -609,12 +596,6 @@
             emojiPickerContainer: document.getElementById('emoji-picker-container'),
             emojiPicker: document.querySelector('emoji-picker'),
             greetingCard: document.getElementById('smart-card-greeting'),
-            tgProfileCard: document.getElementById('tg-profile-card'),
-            tgProfileName: document.getElementById('tg-profile-name'),
-            tgProfileUsername: document.getElementById('tg-profile-username'),
-            tgProfileInitials: document.getElementById('tg-profile-initials'),
-            tgProfileAvatar: document.getElementById('tg-profile-avatar'),
-            tgProfilePillText: document.getElementById('tg-profile-pill-text'),
         };
 
         // =================================================================================
