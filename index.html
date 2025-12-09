@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&family=Lalezar&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --brand-dark-blue: #050814;
@@ -443,6 +443,19 @@
             <main id="app-container" class="flex-grow overflow-y-auto">
                 <!-- Tickets List View -->
                 <div id="tickets-list-view" class="p-4">
+                    <div id="tg-profile-card" class="fade-in-item mb-3 hidden">
+                        <div id="tg-profile-main">
+                            <div id="tg-profile-avatar"><span id="tg-profile-initials">TG</span></div>
+                            <div id="tg-profile-texts">
+                                <span id="tg-profile-name">کاربر تلگرام</span>
+                                <span id="tg-profile-username">@username</span>
+                            </div>
+                        </div>
+                        <div id="tg-profile-pill">
+                            <span id="tg-profile-pill-dot"></span>
+                            <span id="tg-profile-pill-text">متصل به تلگرام</span>
+                        </div>
+                    </div>
                     <div id="smart-card" class="p-4 rounded-lg shadow-lg mb-4 fade-in-item" style="background: linear-gradient(135deg, #3D5A80 0%, #274059 100%);">
                         <h3 id="smart-card-greeting" class="text-lg font-bold text-white mb-3">سلام کاربر عزیز! 👋</h3>
                         <p id="smart-card-tip" class="text-sm mb-4 p-3 rounded-lg" style="background-color: rgba(0,0,0,0.2);"><span class="text-xl">💡</span> <span class="font-bold">نکته:</span> برای دریافت پاسخ سریع‌تر، مشکل خود را با جزئیات کامل شرح دهید.</p>
@@ -606,7 +619,7 @@
         function showNotification(message, success = true, duration = 3000) {
             const toast = document.getElementById('notification-toast');
             toast.textContent = message;
-            toast.className = `fixed top-5 right-5 text-white px-4 py-2 rounded-lg shadow-lg opacity-0 transition-opacity duration-300 z-50 ${success ? 'bg-green-500' : 'bg-red-500'}`;
+            toast.className = `fixed top-5 right-5 text-white px-4 py-2 rounded-lg shadow-lg transition-opacity duration-300 z-50 ${success ? 'bg-green-500' : 'bg-red-500'}`;
             if(activeToastTimeout) clearTimeout(activeToastTimeout);
             toast.classList.remove('opacity-0');
             if (duration > 0) {
@@ -730,8 +743,47 @@
                     const newFaqLink = document.getElementById('faq-link-modal');
                     if (newFaqLink) newFaqLink.addEventListener('click', (e) => { e.preventDefault(); openFaq(); });
                 }
+
             } catch (error) {
-                console.error("خطا در دریافت و اعمال متون پویا:", error.message);
+                console.error("Could not fetch UI texts:", error);
+                showNotification("خطا در بارگذاری متون سفارشی", false);
+            }
+        }
+
+        async function startApp(user) {
+            telegramUser = user;
+            await fetchAndApplyTexts(); // Fetch texts before rendering the rest
+            
+            const userName = `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'کاربر';
+            dom.greetingCard.textContent = (uiTexts.greetingTitle || "سلام کاربر عزیز! 👋").replace('کاربر عزیز', userName);
+
+            dom.loadingView.classList.add('hidden');
+            dom.mainAppContainer.classList.remove('hidden');
+            dom.mainAppContainer.classList.add('flex');
+            showView('ticketsList');
+            listenToTickets();
+        }
+
+        async function fetchTickets() {
+            if (!telegramUser) return;
+            try {
+                const data = await apiFetch(`/tickets?telegram_id=${telegramUser.id}`);
+                const serverTickets = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+                
+                allTicketsData = serverTickets;
+                
+                if (currentTicketId) {
+                    const updatedTicketData = allTicketsData.find(t => t.id === currentTicketId);
+                    if (updatedTicketData && currentTicketData && updatedTicketData.status !== currentTicketData.status) {
+                        currentTicketData = updatedTicketData;
+                        updateConversationViewUI();
+                    }
+                }
+                renderTickets(allTicketsData);
+            } catch (error) {
+                console.error("خطا در دریافت تیکت‌ها از سرور:", error.message);
+                showNotification(`خطا در همگام‌سازی: ${error.message}`, false, 5000);
+                renderTickets([]); 
             }
         }
 
