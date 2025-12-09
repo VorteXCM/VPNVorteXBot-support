@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>پشتیبانی</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&family=Lalezar&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --brand-dark-blue: #050814;
+            --brand-light-blue: #00d4ff;
+            --brand-secondary-bg: #111827;
+            --brand-accent-purple: #6366f1;
+            --brand-accent-pink: #ec4899;
+            --brand-text-primary: #f9fafb;
+            --brand-text-secondary: #9ca3af;
+            --brand-user-message: #00b4d8;
+            --brand-admin-message: #4f46e5;
+            --glass-bg: rgba(15, 23, 42, 0.8);
+            --glass-border: rgba(148, 163, 184, 0.25);
+            --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.85);
+        }
+
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(56, 189, 248, 0.12), transparent 55%),
+                radial-gradient(circle at bottom right, rgba(129, 140, 248, 0.18), transparent 55%),
+                radial-gradient(circle at top right, rgba(244, 114, 182, 0.12), transparent 55%),
+                #020617;
+            color: var(--brand-text-primary);
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+            animation: bg-orbit 40s linear infinite;
+            background-size: 140% 140%;
+        }
+
+        h1, h2, h3, #header-title, #smart-card-greeting {
+            font-family: 'Lalezar', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            letter-spacing: 0.03em;
+        }
+
+        /* Scrollbars */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(148, 163, 184, 0.6) transparent;
+        }
+        *::-webkit-scrollbar {
+            width: 6px;
+        }
+        *::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        *::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, rgba(56, 189, 248, 0.8), rgba(129, 140, 248, 0.9));
+            border-radius: 999px;
+        }
+
+        .nav-bar {
+            background: radial-gradient(circle at top, rgba(56, 189, 248, 0.18), transparent 55%),
+                        linear-gradient(120deg, rgba(15, 23, 42, 0.97), rgba(30, 64, 175, 0.94));
+            color: var(--brand-text-primary);
+            box-shadow: 0 -8px 40px rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-top: 1px solid rgba(148, 163, 184, 0.25);
+        }
+
+        #main-content {
+            max-width: 480px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        #app-container {
+            background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.94), rgba(15, 23, 42, 0.96));
+            border-radius: 1.5rem 1.5rem 0 0;
+            box-shadow: 0 -8px 40px rgba(15, 23, 42, 0.95);
+            border-top: 1px solid rgba(30, 64, 175, 0.5);
+        }
+
+        header {
+            background: radial-gradient(circle at top, rgba(56, 189, 248, 0.18), transparent 55%),
+                        linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(30, 64, 175, 0.98));
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.95);
+            border-bottom: 1px solid rgba(30, 64, 175, 0.65);
+            backdrop-filter: blur(22px) saturate(140%);
+            -webkit-backdrop-filter: blur(22px) saturate(140%);
+        }
+
+        .nav-button {
+            position: relative;
+            transition: color 0.2s ease, transform 0.15s ease;
+        }
+
+        .nav-button::after {
+            content: "";
+            position: absolute;
+            inset-inline: 20%;
+            bottom: -6px;
+            height: 3px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--brand-light-blue), var(--brand-accent-purple));
+            opacity: 0;
+            transform: scaleX(0.3);
+            transform-origin: center;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .nav-button.active {
+            color: var(--brand-light-blue);
+            transform: translateY(-1px);
+        }
+
+        .nav-button.active::after {
+            opacity: 1;
+            transform: scaleX(1);
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.05), transparent 55%)
+                        , rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(148, 163, 184, 0.4);
+            color: var(--brand-text-primary);
+            border-radius: 0.9rem;
+            padding: 0.85rem 0.9rem;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.6);
+            transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease, background 0.18s ease;
+        }
+
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: rgba(156, 163, 175, 0.8);
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--brand-light-blue);
+            box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.5), 0 18px 45px rgba(15, 23, 42, 0.9);
+            transform: translateY(-1px);
+            background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.09), transparent 55%)
+                        , rgba(15, 23, 42, 0.85);
+        }
+
+        #conversation-container {
+            background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.12), transparent 55%),
+                        radial-gradient(circle at bottom right, rgba(99, 102, 241, 0.18), transparent 55%),
+                        #020617;
+            background-size: cover;
+        }
+
+        .message-bubble {
+            padding: 8px 13px;
+            border-radius: 18px;
+            max-width: 100%;
+            min-width: 140px;
+            display: inline-block;
+            word-wrap: break-word;
+            word-break: break-word;
+            white-space: pre-wrap;
+            text-align: right;
+            direction: rtl;
+            box-shadow: 0 14px 35px rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(15, 23, 42, 0.7);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .message-bubble::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top left, rgba(248, 250, 252, 0.16), transparent 60%);
+            opacity: 0.85;
+            pointer-events: none;
+        }
+
+        .message-user {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(59, 130, 246, 0.4));
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-admin {
+            background: linear-gradient(135deg, rgba(129, 140, 248, 0.18), rgba(30, 64, 175, 0.6));
+            color: white;
+            border-bottom-left-radius: 4px;
+        }
+
+        .sender-name {
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 4px;
+            padding: 0 8px;
+            color: rgba(226, 232, 240, 0.9);
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            color: var(--brand-text-secondary);
+            margin-top: 2px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px) scale(0.98);
+                filter: blur(2px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+        }
+
+        .fade-in-item {
+            animation: fadeIn 0.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        #conversation-view {
+            transform: translateX(100%);
+            opacity: 0;
+            transition: transform 0.32s cubic-bezier(0.22, 0.61, 0.36, 1),
+                        opacity 0.26s ease-out;
+        }
+
+        #conversation-view.is-open {
+            transform: translateX(0%);
+            opacity: 1;
+        }
+
+        #reply-box {
+            background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.1), transparent 55%)
+                        , rgba(15, 23, 42, 0.96);
+            border-top: 1px solid rgba(30, 64, 175, 0.7);
+            box-shadow: 0 -18px 45px rgba(15, 23, 42, 0.95);
+        }
+
+        #reply-message {
+            background: rgba(15, 23, 42, 0.9);
+            border-radius: 999px;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            padding: 10px 16px;
+            color: var(--brand-text-primary);
+            max-height: 100px;
+            resize: none;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.8);
+            transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+        }
+
+        #reply-message::placeholder {
+            color: rgba(156, 163, 175, 0.9);
+        }
+
+        #reply-message:focus {
+            outline: none;
+            border-color: var(--brand-light-blue);
+            background: rgba(15, 23, 42, 0.95);
+            box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.55), 0 16px 40px rgba(15, 23, 42, 0.95);
+        }
+
+        .icon-button {
+            padding: 8px;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.08), transparent 60%);
+            border: 1px solid transparent;
+            transition: background 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+        }
+
+        .icon-button:hover {
+            background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), transparent 60%);
+            transform: translateY(-1px) scale(1.03);
+            box-shadow: 0 14px 32px rgba(15, 23, 42, 0.85);
+            border-color: rgba(56, 189, 248, 0.7);
+        }
+
+        .glass-modal-content {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px) saturate(140%);
+            -webkit-backdrop-filter: blur(20px) saturate(140%);
+            border: 1px solid var(--glass-border);
+            border-radius: 1.25rem;
+            box-shadow: var(--shadow-soft);
+        }
+
+        #emoji-picker-container emoji-picker {
+            --background: rgba(15, 23, 42, 0.98);
+            --border-color: var(--brand-dark-blue);
+            --text-color: var(--brand-text-primary);
+            --secondary-text-color: var(--brand-text-secondary);
+            --indicator-color: var(--brand-light-blue);
+            --button-hover-background: rgba(15, 23, 42, 0.9);
+        }
+
+        .rating-stars {
+            direction: ltr;
+            gap: 0.15rem;
+        }
+
+        .rating-star {
+            cursor: pointer;
+            color: #4b5563;
+            transition: color 0.18s ease, transform 0.12s ease;
+        }
+
+        .rating-stars:hover .rating-star {
+            color: #fbbf24;
+        }
+
+        .rating-stars .rating-star:hover ~ .rating-star {
+            color: #4b5563;
+        }
+
+        .rating-stars[data-rated="true"] .rating-star {
+            cursor: default;
+        }
+
+        /* Smart card special styling & animation */
+        #smart-card {
+            position: relative;
+            overflow: hidden;
+            background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.25), transparent 55%),
+                        radial-gradient(circle at bottom right, rgba(236, 72, 153, 0.25), transparent 60%),
+                        linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 64, 175, 0.96));
+            box-shadow: 0 22px 55px rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(148, 163, 184, 0.4);
+            transform-origin: center;
+            animation: card-breathe 4.8s ease-in-out infinite;
+        }
+
+        #smart-card::before,
+        #smart-card::after {
+            content: "";
+            position: absolute;
+            border-radius: 999px;
+            filter: blur(10px);
+            opacity: 0.68;
+            pointer-events: none;
+        }
+
+        #smart-card::before {
+            width: 220px;
+            height: 220px;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.55), transparent 65%);
+            inset-inline-start: -70px;
+            top: -80px;
+            animation: smart-orbit 18s linear infinite;
+        }
+
+        #smart-card::after {
+            width: 260px;
+            height: 260px;
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.55), transparent 65%);
+            inset-inline-end: -90px;
+            bottom: -120px;
+            animation: smart-orbit 22s linear infinite reverse;
+        }
+
+        /* Keyframes */
+        @keyframes bg-orbit {
+            0% {
+                background-position: 0% 0%;
+            }
+            50% {
+                background-position: 100% 100%;
+            }
+            100% {
+                background-position: 0% 0%;
+            }
+        }
+
+        @keyframes smart-orbit {
+            0% {
+                transform: translate3d(0, 0, 0) rotate(0deg);
+            }
+            50% {
+                transform: translate3d(8px, -6px, 0) rotate(180deg);
+            }
+            100% {
+                transform: translate3d(0, 0, 0) rotate(360deg);
+            }
+        }
+
+        @keyframes card-breathe {
+            0% {
+                transform: translateY(0) scale(1);
+                box-shadow: 0 18px 45px rgba(15, 23, 42, 0.9);
+            }
+            50% {
+                transform: translateY(-4px) scale(1.01);
+                box-shadow: 0 26px 60px rgba(15, 23, 42, 0.98);
+            }
+            100% {
+                transform: translateY(0) scale(1);
+                box-shadow: 0 18px 45px rgba(15, 23, 42, 0.9);
+            }
+        }
+
+        @keyframes modal-orbit {
+            0% {
+                transform: translate3d(0, 0, 0) rotate(0deg);
+            }
+            50% {
+                transform: translate3d(-10px, 6px, 0) rotate(180deg);
+            }
+            100% {
+                transform: translate3d(0, 0, 0) rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body class="flex flex-col h-screen">
+
+    <input type="file" id="file-upload" class="hidden" accept="image/*">
+
+    <!-- Loading View -->
+    <div id="loading-view" class="flex flex-col items-center justify-center h-full text-center p-4">
+        <svg class="animate-spin h-10 w-10 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+        <p class="mt-4 text-white text-sm">در حال احراز هویت...</p>
+    </div>
+
+    <!-- Main Application Container -->
+    <div id="main-app-container" class="hidden h-full flex-col relative w-full">
+        <div id="main-content" class="flex-grow flex flex-col">
+            <header class="p-4 text-center text-white text-lg font-bold shadow-md sticky top-0 z-10" style="background-color: var(--brand-secondary-bg);">
+                <h1 id="header-title">تیکت‌ها</h1>
+            </header>
+            <main id="app-container" class="flex-grow overflow-y-auto">
+                <!-- Tickets List View -->
+                <div id="tickets-list-view" class="p-4">
+                    <div id="tg-profile-card" class="fade-in-item mb-3 hidden">
+                        <div id="tg-profile-main">
+                            <div id="tg-profile-avatar"><span id="tg-profile-initials">TG</span></div>
+                            <div id="tg-profile-texts">
+                                <span id="tg-profile-name">کاربر تلگرام</span>
+                                <span id="tg-profile-username">@username</span>
+                            </div>
+                        </div>
+                        <div id="tg-profile-pill">
+                            <span id="tg-profile-pill-dot"></span>
+                            <span id="tg-profile-pill-text">متصل به تلگرام</span>
+                        </div>
+                    </div>
+                    <div id="smart-card" class="p-4 rounded-lg shadow-lg mb-4 fade-in-item" style="background: linear-gradient(135deg, #3D5A80 0%, #274059 100%);">
+                        <h3 id="smart-card-greeting" class="text-lg font-bold text-white mb-3">سلام کاربر عزیز! 👋</h3>
+                        <p id="smart-card-tip" class="text-sm mb-4 p-3 rounded-lg" style="background-color: rgba(0,0,0,0.2);"><span class="text-xl">💡</span> <span class="font-bold">نکته:</span> برای دریافت پاسخ سریع‌تر، مشکل خود را با جزئیات کامل شرح دهید.</p>
+                        <!-- [تغییر] دکمه اکنون به صورت پیش‌فرض hidden نیست، جاوا اسکریپت آن را مدیریت می‌کند -->
+                        <button id="faq-button" class="w-full text-white text-sm px-4 py-2.5 rounded-md" style="background-color: var(--brand-light-blue);">مشاهده سوالات متداول</button>
+                    </div>
+                    <div id="tickets-container" class="space-y-3"></div>
+                    <div id="no-tickets-message" class="hidden text-center text-gray-400 mt-16">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-16 w-16 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                        <p class="mt-4 text-lg">تیکت ندارید!</p>
+                    </div>
+                </div>
+                <!-- New Ticket View -->
+                <div id="new-ticket-view" class="p-4 hidden">
+                    <form id="new-ticket-form" class="space-y-4">
+                        <div>
+                            <label for="department" class="block mb-2 text-sm font-medium">دپارتمان</label>
+                            <select id="department" name="department" class="form-select">
+                                <option value="general">سوالات متفرقه</option>
+                                <option value="technical">پشتیبانی فنی</option>
+                                <option value="sales">بخش فروش</option>
+                                <option value="marketing">بازاریابی</option>
+                                <option value="ideas">ایده ها و پیشنهادات</option>
+                            </select>
+                        </div>
+                        <div><label for="subject" class="block mb-2 text-sm font-medium">موضوع</label><input type="text" id="subject" name="subject" class="form-input" placeholder="موضوع تیکت خود را وارد کنید" required></div>
+                        <div><label for="message" class="block mb-2 text-sm font-medium">متن پیام</label><textarea id="message" name="message" rows="6" class="form-textarea" placeholder="مشکل یا سوال خود را با جزئیات کامل بنویسید..." required></textarea></div>
+                        <button type="submit" id="submit-new-ticket-btn" class="text-white px-4 py-2 rounded-md w-full disabled:opacity-50" style="background-color: var(--brand-light-blue);">ارسال</button>
+                    </form>
+                </div>
+            </main>
+            <!-- Main Navigation -->
+            <nav id="main-nav" class="nav-bar h-[80px] flex items-center justify-around">
+                <button id="nav-tickets-list" class="nav-button active flex flex-col items-center space-y-1 w-1/2"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg><span class="text-xs">تیکت‌ها</span></button>
+                <button id="nav-new-ticket" class="nav-button flex flex-col items-center space-y-1 w-1/2"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg><span class="text-xs">تیکت جدید</span></button>
+            </nav>
+        </div>
+
+        <!-- Conversation View (Overlay) -->
+        <div id="conversation-view" class="absolute top-0 right-0 w-full h-full flex-col z-20 hidden">
+             <header class="p-3 flex items-center sticky top-0 z-10" style="background-color: var(--brand-secondary-bg);">
+                <button id="back-to-tickets" class="p-2 rounded-full transform rotate-180"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg></button>
+                <h2 id="conversation-header" class="text-white font-bold mr-2">گفتگو</h2>
+             </header>
+            <div id="conversation-container" class="p-4 space-y-2 flex flex-col flex-grow overflow-y-auto"></div>
+            <div id="emoji-picker-container" class="absolute bottom-[70px] right-2 z-30 hidden">
+                <emoji-picker></emoji-picker>
+            </div>
+             <div id="reply-box" class="p-2 sticky bottom-0 border-t" style="border-color: var(--brand-dark-blue);">
+                <form id="reply-form" class="flex items-center space-x-2 space-x-reverse">
+                    <button type="button" id="attach-file-btn" class="icon-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /></svg>
+                    </button>
+                    <textarea id="reply-message" rows="1" class="flex-grow" placeholder="پاسخ..." required></textarea>
+                    <button type="button" id="emoji-btn" class="icon-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </button>
+                    <button type="submit" class="icon-button text-white" style="background-color: var(--brand-light-blue);">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
+                    </button>
+                </form>
+            </div>
+            <div id="closed-ticket-banner" class="p-4 text-center bg-[var(--brand-secondary-bg)] text-[var(--brand-text-secondary)] text-sm hidden">
+                <p>این گفتگو توسط پشتیبانی بسته شده است.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals and Toasts -->
+    <div id="info-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4 transition-opacity duration-300">
+        <div class="glass-modal-content p-6 w-full max-w-md flex flex-col max-h-[90vh]">
+            <h3 class="text-xl font-bold mb-4 text-white text-center">راهنمای ارسال تیکت</h3>
+            <div class="overflow-y-auto pr-2 space-y-4 text-sm text-[var(--brand-text-secondary)]">
+                <!-- [تغییر] محتوای این p توسط جاوا اسکریپت بر اساس فعال بودن FAQ پر می‌شود -->
+                <p>لطفا ابتدا صفحه سوالات متداول را بررسی کنید. شاید پاسخ شما آنجا باشد!</p>
+            </div>
+            <button id="info-modal-close-btn" class="mt-6 pt-4 border-t border-white/10 text-white px-6 py-2.5 rounded-md w-full transition" style="background-color: var(--brand-light-blue);">متوجه شدم</button>
+        </div>
+    </div>
+    <div id="custom-modal" class="fixed inset-0 bg-black bg-opacity-60 hidden items-center justify-center z-50 p-4">
+        <div class="bg-[var(--brand-secondary-bg)] rounded-lg shadow-xl p-6 w-full max-w-sm text-center">
+            <div id="modal-icon" class="mx-auto mb-4"></div>
+            <h3 id="modal-title" class="text-lg font-bold mb-2 text-white"></h3>
+            <p id="modal-message" class="text-[var(--brand-text-secondary)] mb-6"></p>
+            <button id="modal-close-btn" class="text-white px-6 py-2 rounded-md w-full" style="background-color: var(--brand-light-blue);">باشه</button>
+        </div>
+    </div>
+    <div id="notification-toast" class="fixed top-5 right-5 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg opacity-0 transition-opacity duration-300 z-50"></div>
+
+    <script>
+        // =================================================================================
+        // SECTION: Configuration & State
+        // =================================================================================
+
+        const WORKER_URL = 'https://ticketing.amiruserbot7.workers.dev';
+        let STORE_HANDLE = null; // This will be dynamically set
+
+        let telegramUser = null;
+        let currentTicketId = null;
+        let currentTicketData = null;
+        let allTicketsData = [];
+        let ticketsPollingInterval = null;
+        let messagesPollingInterval = null;
+        let hasOpenTicket = false;
+        let isSubmitting = false;
+        let uiTexts = {}; // --- NEW: To store dynamic UI texts ---
+
+        const departmentMap = {
+            general: 'سوالات متفرقه',
+            technical: 'پشتیبانی فنی',
+            sales: 'بخش فروش',
+            marketing: 'بازاریابی',
+            ideas: 'ایده ها و پیشنهادات'
+        };
+
+        const statusInfo = {
+            open: { text: 'در حال بررسی', colorClass: 'bg-amber-500' },
+            pending_user_reply: { text: 'پاسخ داده شد', colorClass: 'bg-blue-500' },
+            closed: { text: 'بسته شده', colorClass: 'bg-gray-600' }
+        };
+
+        // =================================================================================
+        // SECTION: DOM Elements
+        // =================================================================================
+
+        const dom = {
+            loadingView: document.getElementById('loading-view'),
+            mainAppContainer: document.getElementById('main-app-container'),
+            ticketsListView: document.getElementById('tickets-list-view'),
+            newTicketView: document.getElementById('new-ticket-view'),
+            conversationView: document.getElementById('conversation-view'),
+            navButtons: { ticketsList: document.getElementById('nav-tickets-list'), newTicket: document.getElementById('nav-new-ticket') },
+            headerTitle: document.getElementById('header-title'),
+            ticketsContainer: document.getElementById('tickets-container'),
+            noTicketsMessage: document.getElementById('no-tickets-message'),
+            newTicketForm: document.getElementById('new-ticket-form'),
+            submitNewTicketBtn: document.getElementById('submit-new-ticket-btn'),
+            backToTicketsBtn: document.getElementById('back-to-tickets'),
+            conversationContainer: document.getElementById('conversation-container'),
+            conversationHeader: document.getElementById('conversation-header'),
+            replyBox: document.getElementById('reply-box'),
+            closedTicketBanner: document.getElementById('closed-ticket-banner'),
+            replyForm: document.getElementById('reply-form'),
+            replyMessageInput: document.getElementById('reply-message'),
+            fileUploadInput: document.getElementById('file-upload'),
+            attachFileBtn: document.getElementById('attach-file-btn'),
+            emojiBtn: document.getElementById('emoji-btn'),
+            infoModal: document.getElementById('info-modal'),
+            infoModalCloseBtn: document.getElementById('info-modal-close-btn'),
+            faqButton: document.getElementById('faq-button'),
+            emojiPickerContainer: document.getElementById('emoji-picker-container'),
+            emojiPicker: document.querySelector('emoji-picker'),
+            greetingCard: document.getElementById('smart-card-greeting'),
+            tgProfileCard: document.getElementById('tg-profile-card'),
+            tgProfileName: document.getElementById('tg-profile-name'),
+            tgProfileUsername: document.getElementById('tg-profile-username'),
+            tgProfileInitials: document.getElementById('tg-profile-initials'),
+            tgProfileAvatar: document.getElementById('tg-profile-avatar'),
+            tgProfilePillText: document.getElementById('tg-profile-pill-text'),
+        };
+
+        // =================================================================================
+        // SECTION: UI Functions (Modals, Toasts, Views)
+        // =================================================================================
+        
+        let activeToastTimeout = null;
+        function showNotification(message, success = true, duration = 3000) {
+            const toast = document.getElementById('notification-toast');
+            toast.textContent = message;
+            toast.className = `fixed top-5 right-5 text-white px-4 py-2 rounded-lg shadow-lg opacity-0 transition-opacity duration-300 z-50 ${success ? 'bg-green-500' : 'bg-red-500'}`;
+            if(activeToastTimeout) clearTimeout(activeToastTimeout);
+            toast.classList.remove('opacity-0');
+            if (duration > 0) {
+                activeToastTimeout = setTimeout(() => {
+                    toast.classList.add('opacity-0');
+                }, duration);
+            }
+        }
+
+        function showModal(title, message, isError = false) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-message').textContent = message;
+            const icon = isError ? `<svg class="w-12 h-12 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>` : `<svg class="w-12 h-12 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+            document.getElementById('modal-icon').innerHTML = icon;
+            document.getElementById('custom-modal').classList.add('flex');
+            document.getElementById('custom-modal').classList.remove('hidden');
+        }
+
+        function showView(viewName) {
+            dom.ticketsListView.classList.add('hidden');
+            dom.newTicketView.classList.add('hidden');
+            if (viewName === 'ticketsList') {
+                dom.ticketsListView.classList.remove('hidden');
+                dom.headerTitle.textContent = uiTexts.headerTickets || 'تیکت‌ها';
+            } else if (viewName === 'newTicket') {
+                dom.newTicketView.classList.remove('hidden');
+                dom.headerTitle.textContent = uiTexts.headerNewTicket || 'تیکت جدید';
+            }
+            Object.values(dom.navButtons).forEach(btn => btn.classList.remove('active'));
+            if (dom.navButtons[viewName]) dom.navButtons[viewName].classList.add('active');
+        }
+
+        // =================================================================================
+        // SECTION: API Communication
+        // =================================================================================
+        
+        async function apiFetch(endpoint, options = {}) {
+            if (!STORE_HANDLE) {
+                throw new Error("شناسه پلتفرم مشخص نشده است.");
+            }
+            const url = `${WORKER_URL}/api/${STORE_HANDLE}${endpoint}`;
+            const response = await fetch(url, options);
+
+            if (!response.ok) {
+                const errorResult = await response.json().catch(() => ({ error: `HTTP Error: ${response.statusText}` }));
+                throw new Error(errorResult.error || 'خطای ناشناخته در سرور');
+            }
+            
+            const result = await response.json();
+            if (!result.success) {
+                throw new Error(result.error || "پاسخ ناموفق از سرور");
+            }
+            return result.data;
+        }
+
+        // =================================================================================
+        // SECTION: Core Application Logic
+        // =================================================================================
+        
+        function getStoreHandleFromTg() {
+            try {
+                const tg = window.Telegram.WebApp;
+                if (tg.initDataUnsafe.start_param) {
+                    const params = tg.initDataUnsafe.start_param.split('_');
+                    if (params[0] === 'storeHandle' && params[1]) {
+                        return params[1];
+                    }
+                }
+            } catch (e) {
+                console.error("Could not get start_param:", e);
+            }
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('storeHandle');
+        }
+
+        // --- [تغییر] Function to fetch and apply dynamic texts (UPDATED) ---
+        async function fetchAndApplyTexts() {
+            try {
+                const data = await apiFetch('/texts');
+                uiTexts = data;
+
+                // --- NEW: Check for FAQ enabled ---
+                // Default to "true" (visible) if the key doesn't exist for older configs
+                const isFaqEnabled = (uiTexts.faqButtonEnabled === "true" || typeof uiTexts.faqButtonEnabled === 'undefined'); 
+
+                document.getElementById('smart-card-greeting').textContent = uiTexts.greetingTitle;
+                document.getElementById('smart-card-tip').innerHTML = uiTexts.quickTipMessage;
+                
+                // Apply text and visibility to main FAQ button
+                dom.faqButton.textContent = uiTexts.faqButtonText;
+                if (isFaqEnabled) {
+                    dom.faqButton.classList.remove('hidden');
+                } else {
+                    dom.faqButton.classList.add('hidden');
+                }
+                
+                document.querySelector('#nav-tickets-list span').textContent = uiTexts.navTickets;
+                document.querySelector('#nav-new-ticket span').textContent = uiTexts.navNewTicket;
+
+                document.querySelector('#info-modal h3').textContent = uiTexts.infoModalTitle;
+                
+                // Safely find and update the modal tip paragraph (with link conditional)
+                const modalTipP = document.querySelector('#info-modal .overflow-y-auto p');
+                if(modalTipP) {
+                    if (isFaqEnabled) {
+                        modalTipP.innerHTML = uiTexts.infoModalTip.replace('صفحه سوالات متداول', `<a href="#" id="faq-link-modal" class="text-blue-300 hover:underline">صفحه سوالات متداول</a>`);
+                    } else {
+                        modalTipP.innerHTML = uiTexts.infoModalTip;
+                    }
+                }
+                
+                const closedBannerP = document.querySelector('#closed-ticket-banner p');
+                if (closedBannerP) closedBannerP.textContent = uiTexts.closedTicketBanner;
+
+                dom.submitNewTicketBtn.textContent = uiTexts.submitNewTicketBtn;
+                dom.infoModalCloseBtn.textContent = uiTexts.modalCloseBtn;
+                document.getElementById('modal-close-btn').textContent = uiTexts.modalCloseBtn;
+
+                // Re-attach listener for the new faq link in the modal (if it was created)
+                if (isFaqEnabled) {
+                    const newFaqLink = document.getElementById('faq-link-modal');
+                    if (newFaqLink) newFaqLink.addEventListener('click', (e) => { e.preventDefault(); openFaq(); });
+                }
+            } catch (error) {
+                console.error("خطا در دریافت و اعمال متون پویا:", error.message);
+            }
+        }
+
+        function listenToTickets() {
+            fetchTickets();
+            if (ticketsPollingInterval) clearInterval(ticketsPollingInterval);
+            ticketsPollingInterval = setInterval(fetchTickets, 5000);
+        }
+
+        function renderTickets(tickets) {
+            hasOpenTicket = tickets.some(ticket => ticket.status !== 'closed');
+            if (tickets.length === 0) {
+                dom.ticketsContainer.innerHTML = '';
+                dom.noTicketsMessage.classList.remove('hidden');
+            } else {
+                dom.noTicketsMessage.classList.add('hidden');
+                const sortedTickets = tickets.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                dom.ticketsContainer.innerHTML = sortedTickets.map((ticket, index) => renderTicketCard(ticket, index)).join('');
+                addTicketCardListeners();
+            }
+        }
+
+        function renderTicketCard(data, index) {
+            const statusDetails = statusInfo[data.status] || { text: data.status, colorClass: 'bg-gray-500' };
+            const creationDate = new Date(data.created_at).toLocaleString('fa-IR', { dateStyle: 'short', timeStyle: 'short' });
+            const departmentName = departmentMap[data.department] || data.department;
+            const animationDelay = index * 80;
+            
+            const deleteButton = data.status === 'closed' 
+                ? `<button data-id="${data.id}" class="delete-ticket-btn p-1"><svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>`
+                : '';
+
+            let ratingSection = '';
+            if (data.status === 'closed') {
+                if (data.rating) {
+                    let stars = Array.from({ length: 5 }, (_, i) => 
+                        `<svg class="w-5 h-5 ${i < data.rating ? 'text-amber-400' : 'text-gray-600'}" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`
+                    ).join('');
+                    ratingSection = `<div class="mt-3 pt-3 border-t text-center" style="border-color: var(--brand-dark-blue);"><p class="text-xs text-gray-400 mb-1">امتیاز شما:</p><div class="flex justify-center">${stars}</div></div>`;
+                } else {
+                    let stars = [5, 4, 3, 2, 1].map(i => `<svg data-id="${data.id}" data-rating-value="${i}" class="rating-star w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`).join('');
+                    ratingSection = `<div class="mt-3 pt-3 border-t text-center" style="border-color: var(--brand-dark-blue);"><p class="text-xs text-gray-400 mb-2">به کیفیت پاسخ‌دهی امتیاز دهید:</p><div class="rating-stars flex flex-row-reverse justify-center" data-ticket-id="${data.id}">${stars}</div></div>`;
+                }
+            }
+            
+            return `
+            <div class="ticket-card p-4 rounded-lg shadow-lg fade-in-item cursor-pointer" style="animation-delay: ${animationDelay}ms; background-color: var(--brand-secondary-bg);" data-id="${data.id}">
+                <div class="flex justify-between items-start">
+                    <p class="font-bold text-md">${data.subject}</p>
+                    <span class="flex items-center text-xs px-2 py-1 rounded-full" style="background-color: var(--brand-dark-blue);"><span class="w-2 h-2 rounded-full ml-2 ${statusDetails.colorClass}"></span><span>${statusDetails.text}</span></span>
+                </div>
+                <div class="flex justify-between items-center text-xs mt-4 pt-2 border-t" style="border-color: var(--brand-dark-blue);">
+                    <span style="color: var(--brand-text-secondary);">${departmentName}</span>
+                    <div class="flex items-center">${deleteButton}<span style="color: var(--brand-text-secondary);">${creationDate}</span></div>
+                </div>
+                ${ratingSection}
+            </div>`;
+        }
+
+        function addTicketCardListeners() {
+            document.querySelectorAll('.ticket-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    if (e.target.closest('.rating-stars, .delete-ticket-btn')) return;
+                    openConversation(card.dataset.id);
+                });
+            });
+            document.querySelectorAll('.delete-ticket-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => { e.stopPropagation(); deleteTicket(btn.dataset.id); });
+            });
+            document.querySelectorAll('.rating-star').forEach(star => {
+                star.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    submitRating(star.dataset.id, parseInt(star.dataset.ratingValue));
+                });
+            });
+        }
+
+        async function deleteTicket(ticketId) {
+            showModal(
+                'تایید حذف', 
+                'آیا از حذف این تیکت مطمئن هستید؟ این عمل غیرقابل بازگشت است.', 
+                true
+            );
+            document.getElementById('modal-close-btn').onclick = async () => {
+                 document.getElementById('custom-modal').classList.add('hidden');
+                try {
+                    await apiFetch(`/tickets/${ticketId}`, { method: 'DELETE' });
+                    showNotification('تیکت با موفقیت حذف شد.');
+                    fetchTickets();
+                } catch (error) {
+                    showNotification(`حذف تیکت با خطا مواجه شد: ${error.message}`, false);
+                    console.error("Error deleting ticket:", error);
+                }
+            };
+        }
+
+        async function submitRating(ticketId, rating) {
+            const starContainer = document.querySelector(`.rating-stars[data-ticket-id="${ticketId}"]`);
+            if (starContainer.dataset.submitting === 'true') return;
+            starContainer.dataset.submitting = 'true';
+            starContainer.style.opacity = '0.5';
+            
+            try {
+                const payload = { rating, telegram_id: telegramUser.id };
+                await apiFetch(`/tickets/${ticketId}/rate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+                showNotification('امتیاز شما با موفقیت ثبت شد.');
+                fetchTickets();
+            } catch (error) {
+                showNotification(`ثبت امتیاز با خطا مواجه شد: ${error.message}`, false);
+                delete starContainer.dataset.submitting;
+                starContainer.style.opacity = '1';
+            }
+        }
+
+        function openConversation(ticketId) {
+            currentTicketId = ticketId;
+            currentTicketData = allTicketsData.find(t => t.id === ticketId);
+            if (!currentTicketData) {
+                showNotification("خطا: اطلاعات تیکت یافت نشد.", false);
+                return;
+            }
+            dom.conversationView.classList.remove('hidden');
+            dom.conversationView.classList.add('flex');
+            setTimeout(() => { dom.conversationView.classList.add('is-open'); }, 10);
+            dom.conversationHeader.textContent = currentTicketData.subject;
+            listenToMessages(ticketId);
+            updateConversationViewUI();
+        }
+
+        function closeConversation() {
+            if (messagesPollingInterval) clearInterval(messagesPollingInterval);
+            dom.conversationView.classList.remove('is-open');
+            setTimeout(() => {
+                dom.conversationView.classList.add('hidden');
+                dom.conversationView.classList.remove('flex');
+                currentTicketId = null;
+                currentTicketData = null;
+            }, 300);
+        }
+
+        function updateConversationViewUI() {
+            if (currentTicketData?.status === 'closed') {
+                dom.replyBox.classList.add('hidden');
+                dom.closedTicketBanner.classList.remove('hidden');
+            } else {
+                dom.replyBox.classList.remove('hidden');
+                dom.closedTicketBanner.classList.add('hidden');
+            }
+        }
+
+        async function fetchMessages(ticketId) {
+            if (!ticketId) return;
+            try {
+                const messagesData = await apiFetch(`/messages?ticket_id=${ticketId}`);
+                const isScrolledToBottom = dom.conversationContainer.scrollHeight - dom.conversationContainer.clientHeight <= dom.conversationContainer.scrollTop + 50;
+                
+                dom.conversationContainer.innerHTML = '';
+                if (messagesData) {
+                    dom.conversationContainer.innerHTML = Object.values(messagesData)
+                        .sort((a,b) => new Date(a.created_at) - new Date(b.created_at))
+                        .map(renderMessage).join('');
+                    attachHumanRequestListeners();
+                }
+                
+                if(isScrolledToBottom) {
+                    dom.conversationContainer.scrollTop = dom.conversationContainer.scrollHeight;
+                }
+            } catch (error) {
+                console.error("Error fetching messages:", error);
+            }
+        }
+        
+        function listenToMessages(ticketId) {
+            fetchMessages(ticketId);
+            if (messagesPollingInterval) clearInterval(messagesPollingInterval);
+            messagesPollingInterval = setInterval(() => fetchMessages(ticketId), 3000);
+        }
+
+        function renderMessage(data) {
+            const isUser = data.sender === 'user';
+            const senderName = isUser 
+                ? `${telegramUser.first_name || 'شما'}` 
+                : (data.source === 'ai' ? 'دستیار هوش مصنوعی' : (departmentMap[currentTicketData?.department] || 'پشتیبانی'));
+            const time = new Date(data.created_at).toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit'});
+            
+            let messageContent = '';
+            if (data.type === 'image_placeholder') {
+                messageContent = `<div class="flex items-center space-x-2 space-x-reverse italic opacity-80"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" /></svg><p class="text-sm">تصویر ارسال شد</p></div>`;
+            } else {
+                messageContent = `<p class="whitespace-pre-wrap text-sm">${data.text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="text-blue-300 underline">$1</a>')}</p>`;
+            }
+
+            const humanRequestButton = data.source === 'ai'
+                ? `<div class="mt-3 pt-2 border-t border-white/10"><p class="text-xs text-gray-400 mb-2">اگر این پیام مشکلتان را برطرف نکرد:</p><button class="request-human-btn text-xs w-full text-center py-2 px-3 rounded-lg border border-sky-500 text-sky-400 hover:bg-sky-500 hover:text-white transition-colors duration-200" data-ticket-id="${currentTicketId}">برای اتصال به کارشناس کلیک کنید</button></div>`
+                : '';
+
+            return `
+            <div class="flex flex-col ${isUser ? 'self-end items-end' : 'self-start items-start'} max-w-xs md:max-w-md">
+                <p class="sender-name" style="color: ${isUser ? '#82aaff' : '#a2a2a2'}">${senderName}</p>
+                <div class="message-bubble ${isUser ? 'message-user' : 'message-admin'}">${messageContent}${humanRequestButton}</div>
+                <span class="message-time px-2 w-full ${isUser ? 'text-left' : 'text-right'}">${time}</span>
+            </div>`;
+        }
+
+        function appendMessageToUI(messageData) {
+            dom.conversationContainer.innerHTML += renderMessage(messageData);
+            dom.conversationContainer.scrollTop = dom.conversationContainer.scrollHeight;
+        }
+
+        async function sendTextMessage(text) {
+             if (!currentTicketId || !text) return;
+             
+             const tempPayload = { sender: 'user', text, created_at: new Date().toISOString() };
+             const payload = { ticket_id: currentTicketId, sender: 'user', text };
+             
+             const submitButton = dom.replyForm.querySelector('button[type="submit"]');
+             submitButton.disabled = true;
+             
+             appendMessageToUI(tempPayload);
+             dom.replyMessageInput.value = '';
+             dom.replyMessageInput.style.height = 'auto';
+
+             try {
+                await apiFetch('/messages', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+             } catch (error) {
+                 console.error("Error sending message:", error);
+                 showNotification(error.message, false);
+             } finally {
+                 submitButton.disabled = false;
+                 fetchMessages(currentTicketId);
+             }
+        }
+        
+        async function handleImageUpload(file) {
+            if (!file) return;
+            if (file.size > 50 * 1024 * 1024) { // 50MB limit
+                return showNotification("حجم فایل نباید بیشتر از 50 مگابایت باشد.", false);
+            }
+
+            const submitButton = dom.replyForm.querySelector('button[type="submit"]');
+            dom.attachFileBtn.disabled = true;
+            submitButton.disabled = true;
+            showNotification("در حال ارسال تصویر...", true, 0);
+
+            try {
+                const formData = new FormData();
+                formData.append('ticket_id', currentTicketId);
+                formData.append('sender', 'user');
+                formData.append('image', file);
+
+                await apiFetch('/messages', { method: 'POST', body: formData });
+                showNotification("تصویر با موفقیت ارسال شد.", true);
+            } catch (error) {
+                console.error("Image send failed:", error);
+                showNotification(`ارسال تصویر ناموفق بود: ${error.message}`, false);
+            } finally {
+                dom.attachFileBtn.disabled = false;
+                submitButton.disabled = false;
+                dom.fileUploadInput.value = '';
+                fetchMessages(currentTicketId);
+            }
+        }
+        
+        async function handleNewTicketSubmit(event) {
+            event.preventDefault();
+            if (isSubmitting) return;
+
+            const formData = new FormData(dom.newTicketForm);
+            const data = Object.fromEntries(formData.entries());
+
+            if (!data.subject.trim() || !data.message.trim()) {
+                return showNotification("لطفا موضوع و متن پیام را وارد کنید.", false);
+            }
+
+            isSubmitting = true;
+            const originalSubmitText = dom.submitNewTicketBtn.textContent;
+            dom.submitNewTicketBtn.disabled = true;
+            dom.submitNewTicketBtn.textContent = 'در حال ارسال...';
+            
+            try {
+                const payload = {
+                    telegram_id: telegramUser.id.toString(),
+                    user_name: `${telegramUser.first_name || ''} ${telegramUser.last_name || ''}`.trim(),
+                    subject: data.subject,
+                    department: data.department,
+                    message: data.message,
+                    storeHandle: STORE_HANDLE
+                };
+                
+                await apiFetch('/tickets', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+                
+                dom.newTicketForm.reset();
+                showNotification('تیکت شما با موفقیت ارسال شد.');
+                fetchTickets();
+                showView('ticketsList');
+
+            } catch (error) {
+                showNotification(`ارسال تیکت با خطا مواجه شد: ${error.message}`, false);
+                console.error("Error creating ticket:", error);
+            } finally {
+                isSubmitting = false;
+                dom.submitNewTicketBtn.disabled = false;
+                dom.submitNewTicketBtn.textContent = originalSubmitText;
+            }
+        }
+
+        function attachHumanRequestListeners() {
+            document.querySelectorAll('.request-human-btn').forEach(button => {
+                if (button.dataset.listenerAttached) return;
+                button.dataset.listenerAttached = 'true';
+                button.addEventListener('click', async (e) => {
+                    const ticketId = e.target.dataset.ticketId;
+                    e.target.disabled = true;
+                    e.target.textContent = 'در حال ارسال...';
+                    try {
+                        await apiFetch(`/tickets/${ticketId}/request-human`, { method: 'POST' });
+                        showNotification('درخواست شما برای اتصال به کارشناس ثبت شد.');
+                        e.target.textContent = 'درخواست ثبت شد';
+                        e.target.classList.add('opacity-50', 'cursor-not-allowed');
+                    } catch (error) {
+                        showNotification(error.message, false);
+                        e.target.disabled = false;
+                        e.target.textContent = 'برای اتصال به کارشناس کلیک کنید';
+                    }
+                });
+            });
+        }
+
+        // =================================================================================
+        // SECTION: Initialization & Event Listeners
+        // =================================================================================
+
+        document.addEventListener('DOMContentLoaded', () => {
+            STORE_HANDLE = getStoreHandleFromTg();
+            
+            if (!STORE_HANDLE) {
+                dom.loadingView.innerHTML = `
+                    <div class="text-center text-red-400 p-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <h1 class="text-xl font-bold mt-4 text-white">خطا در پیکربندی</h1>
+                        <p class="mt-2 text-gray-300">شناسه پلتفرم (storeHandle) در آدرس Mini App یافت نشد. لطفاً از طریق دکمه منوی ربات تلگرام وارد شوید.</p>
+                    </div>`;
+                return;
+            }
+
+            try {
+                const tg = window.Telegram.WebApp;
+                tg.ready();
+                tg.expand();
+                if (tg.initDataUnsafe?.user?.id) {
+                    startApp(tg.initDataUnsafe.user);
+                } else {
+                    console.warn("Telegram user data not found. Using mock user for testing.");
+                    startApp({id: "12345678", first_name: "Test", last_name: "User"});
+                }
+            } catch (error) {
+                console.error("Could not initialize Telegram Web App:", error);
+                showModal('خطای راه‌اندازی', 'امکان برقراری ارتباط با تلگرام وجود ندارد.', true);
+            }
+        });
+
+        dom.navButtons.ticketsList.addEventListener('click', () => showView('ticketsList'));
+        dom.navButtons.newTicket.addEventListener('click', () => {
+            if (hasOpenTicket) {
+                showModal('امکان ایجاد تیکت جدید وجود ندارد', 'شما در حال حاضر یک تیکت باز دارید. لطفا تا زمان بسته شدن آن منتظر بمانید.', true);
+            } else {
+                dom.infoModal.classList.add('flex');
+                dom.infoModal.classList.remove('hidden');
+            }
+        });
+
+        dom.newTicketForm.addEventListener('submit', handleNewTicketSubmit);
+        dom.replyForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const text = dom.replyMessageInput.value.trim();
+            if(text) sendTextMessage(text);
+        });
+
+        dom.backToTicketsBtn.addEventListener('click', closeConversation);
+        dom.infoModalCloseBtn.addEventListener('click', () => {
+            dom.infoModal.classList.add('hidden');
+            dom.infoModal.classList.remove('flex');
+            showView('newTicket');
+        });
+        document.getElementById('modal-close-btn').addEventListener('click', () => {
+            document.getElementById('custom-modal').classList.add('hidden');
+            document.getElementById('custom-modal').classList.remove('flex');
+        });
+
+        dom.attachFileBtn.addEventListener('click', () => dom.fileUploadInput.click());
+        dom.fileUploadInput.addEventListener('change', (e) => {
+            if (e.target.files?.[0]) handleImageUpload(e.target.files[0]);
+        });
+        dom.emojiBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dom.emojiPickerContainer.classList.toggle('hidden');
+        });
+        dom.emojiPicker.addEventListener('emoji-click', event => {
+            const { unicode } = event.detail;
+            dom.replyMessageInput.value += unicode;
+            dom.replyMessageInput.focus();
+        });
+        document.addEventListener('click', (e) => {
+            if (!dom.emojiPickerContainer.contains(e.target) && !dom.emojiBtn.contains(e.target)) {
+                dom.emojiPickerContainer.classList.add('hidden');
+            }
+        });
+
+        dom.replyMessageInput.addEventListener('input', () => {
+            dom.replyMessageInput.style.height = 'auto';
+            dom.replyMessageInput.style.height = `${dom.replyMessageInput.scrollHeight}px`;
+        });
+        
+        const openFaq = () => {
+            // [تغییر] چک می‌کند که آیا isFaqEnabled true است یا خیر (اگرچه دکمه‌ها باید مخفی باشند)
+            const isFaqEnabled = (uiTexts.faqButtonEnabled === "true" || typeof uiTexts.faqButtonEnabled === 'undefined');
+            if (!isFaqEnabled) return; 
+
+            const faqUrl = uiTexts.faqUrl || 'https://faqhub.amiruserbot7.workers.dev/';
+            window.Telegram?.WebApp.openLink(faqUrl) || window.open(faqUrl, '_blank');
+        };
+        dom.faqButton.addEventListener('click', openFaq);
+        
+        // [تغییر] این listener دیگر در اینجا اضافه نمی‌شود،
+        // بلکه به صورت پویا در fetchAndApplyTexts اضافه می‌شود
+        // const initialFaqLink = document.getElementById('faq-link-modal');
+        // if(initialFaqLink) initialFaqLink.addEventListener('click', (e) => { e.preventDefault(); openFaq(); });
+
+    </script>
+</body>
+</html>
